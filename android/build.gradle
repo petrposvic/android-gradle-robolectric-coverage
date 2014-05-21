@@ -1,0 +1,56 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+	}
+
+	dependencies {
+		classpath 'com.android.tools.build:gradle:0.10.0'
+		classpath 'org.robolectric.gradle:gradle-android-test-plugin:0.10.+'
+	}
+}
+
+apply plugin: 'android'
+apply plugin: 'android-test'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+}
+
+android {
+	compileSdkVersion 19
+	buildToolsVersion "19.0.3"
+
+	defaultConfig {
+		minSdkVersion 10
+		targetSdkVersion 18
+		versionCode 1
+		versionName "1.0"
+	}
+
+	buildTypes {
+		debug {
+		}
+
+		release {
+			runProguard false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+		}
+	}
+
+	sourceSets {
+		androidTest.setRoot('src/test')
+	}
+}
+
+dependencies {
+	androidTestCompile 'junit:junit:4.10'
+	androidTestCompile 'org.robolectric:robolectric:2.3'
+
+	testCompile 'junit:junit:4.10'
+	testCompile 'org.robolectric:robolectric:2.3'
+
+	compile 'com.android.support:appcompat-v7:+'
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+}
