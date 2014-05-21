@@ -1,10 +1,12 @@
 package cz.posvic.bootstrap.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import cz.posvic.bootstrap.lib.LibActivity;
 
 public class MainActivity extends Activity {
 
@@ -28,7 +30,11 @@ public class MainActivity extends Activity {
 			return true;
 		}
 
+		if (id == R.id.action_run) {
+			startActivity(new Intent(getApplicationContext(), LibActivity.class));
+			return true;
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
-
 }

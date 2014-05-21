@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">Bootstrap</string>
-	<string name="hello_world">Hello world!</string>
+	<string name="hello_world">Hello world from main activity!</string>
 	<string name="action_settings">Settings</string>
+	<string name="action_run">Run library activity</string>
 </resources>
