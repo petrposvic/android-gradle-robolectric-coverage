@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'android-library'
 apply plugin: 'android-test'
+apply plugin: 'jacoco'
 
 repositories {
 	mavenCentral()
@@ -20,7 +21,7 @@ repositories {
 
 android {
 	compileSdkVersion 19
-	buildToolsVersion "19.0.3"
+	buildToolsVersion '19.0.3'
 
 	defaultConfig {
 		minSdkVersion 10
@@ -30,6 +31,9 @@ android {
 	}
 
 	buildTypes {
+		debug {
+		}
+
 		release {
 			runProguard false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -44,10 +48,67 @@ android {
 dependencies {
 	androidTestCompile 'junit:junit:4.10'
 	androidTestCompile 'org.robolectric:robolectric:2.3'
-
 	testCompile 'junit:junit:4.10'
 	testCompile 'org.robolectric:robolectric:2.3'
-
 	compile 'com.android.support:appcompat-v7:19.+'
 	compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+FileTree getJacocoClassDirs(List projects) {
+	def classDirs = fileTree(
+			dir: "${buildDir}/classes/debug",
+			excludes: ['**/R*.class', '**/BuildConfig.class']
+	)
+
+	projects.each {
+		def projectBuildDir = project(it).buildDir
+		classDirs += fileTree(
+				dir: "${projectBuildDir}/classes/release",
+				excludes: ['**/R*.class', '**/BuildConfig.class']
+		)
+	}
+
+	return classDirs
+}
+
+FileCollection getJacocoSrcFiles(List projects) {
+	Set srcFiles = android.sourceSets.main.java.srcDirs
+
+	projects.each {
+		def projectDir = project(it).projectDir
+		srcFiles.add("${projectDir}/src/main/java")
+	}
+
+	return files(srcFiles)
+}
+
+FileCollection getJacocoExecFiles(List projects) {
+	Set execFiles = new HashSet();
+	execFiles.add("${buildDir}/jacoco/testDebug.exec")
+
+	projects.each {
+		def projectBuildDir = project(it).buildDir
+		execFiles.add("${projectBuildDir}/jacoco/testDebug.exec")
+	}
+
+	return files(execFiles)
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: test) {
+	description 'Generate code coverage.'
+	group 'Verification'
+
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination "${buildDir}/reports/coverage"
+	}
+
+	// TODO: Automatically get project dependencies recursively
+	// Gradle project dependencies go here
+	def dependencies = []
+
+	classDirectories = getJacocoClassDirs(dependencies)
+	sourceDirectories = getJacocoSrcFiles(dependencies)
+	executionData = getJacocoExecFiles(dependencies)
 }
