@@ -36,3 +36,6 @@ Generated HTML in build/reports/coverage/index.html file.
 
 # What doesn't work
 * test ActionBarActivity
+
+# FAQ
+* If IntelliJ Idea can't synchronize Gradle settings, use different version compileSdkVersion (for example 18).
